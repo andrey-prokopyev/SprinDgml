@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SprinDgml
+﻿namespace SprinDgml
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
+            var dgmlComposer = new DgmlComposer();
+            dgmlComposer.ComposeDgmlFile(args?[0] ?? "spring.dgml");
         }
     }
 }
