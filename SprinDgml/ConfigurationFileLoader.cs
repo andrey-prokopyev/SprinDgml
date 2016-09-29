@@ -10,9 +10,9 @@
     {
         public void Load(string configFileName)
         {
-            var configFlePath = this.GetConfigFilePath(configFileName);
+            var configFilePath = this.GetConfigFilePath(configFileName);
             
-            AppDomain.CurrentDomain.SetData("APP_CONFIG_FILE", configFlePath);
+            AppDomain.CurrentDomain.SetData("APP_CONFIG_FILE", configFilePath);
             ResetConfigMechanism();
 
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomainOnAssemblyResolve;

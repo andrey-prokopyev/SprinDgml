@@ -80,6 +80,7 @@
     <Compile Include="Dependency.cs" />
     <Compile Include="DgmlBuilder.cs" />
     <Compile Include="DgmlComposer.cs" />
+    <Compile Include="Node.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

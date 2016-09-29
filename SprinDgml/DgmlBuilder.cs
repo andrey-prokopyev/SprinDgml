@@ -1,7 +1,7 @@
 namespace SprinDgml
 {
-    using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     using Microsoft.VisualStudio.GraphModel;
 
@@ -13,27 +13,42 @@ namespace SprinDgml
 
             foreach (var dependency in dependencies)
             {
-                if (dependency.IsTargetPrimitive)
+                if (dependency.IsTargetPrimitive && dependency.Target.Label.Length > 50)
                 {
-                    var id = Guid.NewGuid()
-                            .ToString();
+                    var id = dependency.Target.Id;
 
                     var container = graph.Nodes.CreateNew("container:" + id);
                     container.IsGroup = true;
-                    container.Label = "...";
+                    container.Label = container.Id.LiteralValue;
                     container.SetValue(GraphCommonSchema.Group, GraphGroupStyle.Collapsed);
 
                     var primitiveNode = graph.Nodes.CreateNew(id);
-                    primitiveNode.Label = dependency.Target;
+                    primitiveNode.Label = $"{dependency.Target.Label}";
 
                     var containerLink = graph.Links.GetOrCreate(container, primitiveNode, dependency.Order?.ToString() ?? string.Empty, GraphCommonSchema.Contains);
                     containerLink.IsGroup = true;
 
-                    graph.Links.GetOrCreate(dependency.Source, container.Id);
+                    graph.Links.GetOrCreate(dependency.Source.Id, container.Id);
                 }
                 else
                 {
-                    var link = graph.Links.GetOrCreate(dependency.Source, dependency.Target);
+                    var sourceNode = graph.Nodes.GetOrCreate(dependency.Source.Id);
+                    sourceNode.Label = $"{dependency.Source.Label}";
+
+                    var targetNode = graph.Nodes.GetOrCreate(dependency.Target.Id);
+                    targetNode.Label = $"{dependency.Target.Label}";
+
+                    var link = graph.Links.GetOrCreate(sourceNode, targetNode);
+
+                    if (sourceNode.IsContained)
+                    {
+                        var container = sourceNode.ParentGroups.FirstOrDefault();
+                        if (container != null)
+                        {
+                            var containerLink = graph.Links.GetOrCreate(container.GroupNode, targetNode, dependency.Order?.ToString() ?? string.Empty, GraphCommonSchema.Contains);
+                            containerLink.IsGroup = true;
+                        }
+                    }
 
                     if (dependency.Order != null)
                     {
